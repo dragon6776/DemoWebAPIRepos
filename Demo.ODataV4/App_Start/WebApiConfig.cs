@@ -29,6 +29,26 @@ namespace Demo.ODataV4
             /// ODATA V4
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
             builder.EntitySet<Order>("Orders");
+
+            // add transporter functions
+            //builder.Namespace = "TransporterService";
+
+            //builder.EntityType<Order>().Collection
+            //   .Function("Login")
+            //   .Returns<Order>();       // hd: Returns<double>();
+
+            //builder.EntityType<Order>().Collection
+            //    .Function("UpdateOrderStatus")
+            //    .Returns<Order>();      // hd: Returns<double>();
+
+
+            // New code:
+            builder.Namespace = "ProductService";
+            builder.EntityType<Order>().Collection
+                .Function("MostExpensive")
+                .Returns<double>();
+
+            config.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
             config.MapODataServiceRoute("odata", "odata", builder.GetEdmModel()); /// ODATA-V4 MPCT ~ V3
         }
     }

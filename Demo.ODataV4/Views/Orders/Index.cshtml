@@ -8,6 +8,46 @@
 <script>
     var baseUrl = "/odata/Orders";
 
+    function login() {
+        var user = {
+            UserName: "tdhuy",
+            Password: "123456",
+            TokenKey: ""
+        };
+
+
+        $.ajax({
+            url: baseUrl + "/ProductService.MostExpensive",
+            data: user, // co can stringyfly???
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+
+    function getOrder(id) {
+
+        $.ajax({
+            url: baseUrl + "(" + id + ")",
+            type: "GET",
+            //dataType: "json",
+            //contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
     function createAnOrder() {
 
         /* public int Id { get; set; }
@@ -24,7 +64,7 @@
 
         $.ajax({
             url: baseUrl,
-            data: model, // co can stringyfly???
+            data: JSON.stringify(model), // co can stringyfly???
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -41,9 +81,9 @@
 
         var model = {
             Id: id,
-            Title: "",
-            Note: "",
-            TotalAmount: "0",
+            Title: "updated + @guidId",
+            Note: "updated + @guidId",
+            TotalAmount: "12",
         }
 
         $.ajax({
@@ -78,8 +118,8 @@
 <h2>Index</h2>
 
 <p>
+    <button class="btn btn-info" onclick="login()">Login</button>
     <button class="btn btn-success" onclick="createAnOrder()">Create an order</button>
-    <button class="btn btn-primary" onclick="updateAnOrder()">Update an order</button>
 </p>
 
 <p>
@@ -97,6 +137,7 @@
             @Html.DisplayNameFor(model => model.TotalAmount)
         </th>
         <th></th>
+        <th></th>
     </tr>
 
     @foreach (var item in Model)
@@ -112,11 +153,14 @@
                 @Html.DisplayFor(modelItem => item.TotalAmount)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                <button class="btn btn-danger btn-sm" onclick="deleteAnOrder(@item.Id)">Delete</button>
             </td>
+            <td>
+                <button class="btn btn-info btn-sm" onclick="getOrder(@item.Id)">Details</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteAnOrder(@item.Id)">Delete</button>
+                <button class="btn btn-primary" onclick="updateAnOrder(@item.Id)">Update</button>
+            </td>
+
         </tr>
     }
 

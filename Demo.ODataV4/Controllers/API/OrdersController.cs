@@ -39,22 +39,27 @@ namespace Demo.ODataV4.Controllers.API
         //    // {"@odata.context":"http://localhost:2218/odata/$metadata#Orders","value":[{"Id...},...]}
         //}
 
+        [EnableQuery]
         public IHttpActionResult GetOrders(ODataQueryOptions<Order> queryOptions)
         {
             // validate the query.
             try
             {
                 queryOptions.Validate(_validationSettings);
+
+                var orders = db.Orders;
+
+                var result = Ok<IEnumerable<Order>>(orders);
+
+                return result;
+
+                // {"@odata.context":"http://localhost:2218/odata/$metadata#Orders","value":[{"Id":1,"
+                //return StatusCode(HttpStatusCode.NotImplemented);
             }
             catch (ODataException ex)
             {
                 return BadRequest(ex.Message);
             }
-
-            var orders = db.Orders;
-
-            return Ok<IEnumerable<Order>>(orders);
-            //return StatusCode(HttpStatusCode.NotImplemented);
         }
 
         // GET: odata/Orders(5)
@@ -181,5 +186,42 @@ namespace Demo.ODataV4.Controllers.API
         {
             return db.Orders.Count(e => e.Id == key) > 0;
         }
+
+        #region TRANSPORTER FUNCTIONS
+
+        [HttpPost]
+        public IHttpActionResult MostExpensive()
+        {
+            double product = db.Orders.Count();
+            return Ok(product);
+        }
+
+        //[HttpPost]
+        //public IHttpActionResult Login(TransporterLoginModel user)
+        //{
+        //    if (string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Password))
+        //    {
+        //        ModelState.AddModelError("UserName", "Co the sai");
+        //        ModelState.AddModelError("Password", "Co the sai");
+        //        ModelState.AddModelError("", "UserName or Password incorrect");
+
+        //        //return BadRequest(ModelState);
+
+        //        //return StatusCode(HttpStatusCode.Unauthorized);
+
+        //        return ResponseMessage(new HttpResponseMessage
+        //        {
+        //            StatusCode = HttpStatusCode.Unauthorized,
+        //            Content = new StringContent("Content: Tên đăng nhập or mật khẩu ko đúng"),
+        //            ReasonPhrase = "ReasonPhrase: Tên đn or mk ko đúng",
+        //        });
+        //    }
+
+        //    user.TokenKey = Guid.NewGuid().ToString();
+
+        //    return Ok(user);
+        //}
+
+        #endregion
     }
 }
